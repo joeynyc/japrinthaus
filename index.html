@@ -64,27 +64,6 @@
             pointer-events: none;
         }
 
-        .hero-logo {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: min(300px, 70vw);
-            opacity: 0.15;
-            pointer-events: none;
-            z-index: 1;
-            animation: logoFloat 8s ease-in-out infinite;
-        }
-
-        @keyframes logoFloat {
-            0%, 100% {
-                transform: translate(-50%, -50%) rotate(0deg) scale(1);
-            }
-            50% {
-                transform: translate(-50%, -50%) rotate(2deg) scale(1.02);
-            }
-        }
-
         .header-content {
             text-align: center;
             position: relative;
@@ -478,7 +457,6 @@
 </head>
 <body>
     <header>
-        <img src="logo.png" alt="J&A Printhaus Logo" class="hero-logo">
         <div class="container">
             <div class="header-content">
                 <h1>J&A<br><span>Printhaus</span></h1>
