@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J&A Printhaus — Direct-to-Wall Printing</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --blue: #2323ff;
+            --grey: #c4c4c4;
+            --dark-grey: #1a1a1a;
+            --light-grey: #e0e0e0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--grey);
+            background-color: var(--black);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        header {
+            padding: 4rem 0;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark-grey) 100%);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(90deg, rgba(35, 35, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(35, 35, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+
+        .header-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2.5rem, 10vw, 6rem);
+            color: var(--light-grey);
+            line-height: 0.95;
+            letter-spacing: -3px;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            color: var(--blue);
+            display: block;
+        }
+
+        .tagline {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-weight: 300;
+            color: var(--grey);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--light-grey);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--dark-grey);
+            background: var(--dark-grey);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--blue);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        nav a:hover {
+            border-color: var(--blue);
+            color: var(--light-grey);
+        }
+
+        nav a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        section {
+            padding: 5rem 0;
+            position: relative;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--dark-grey);
+        }
+
+        .section-title {
+            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--light-grey);
+            line-height: 1.1;
+            letter-spacing: -2px;
+        }
+
+        #about {
+            background: var(--dark-grey);
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-text {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-weight: 300;
+            line-height: 1.9;
+            color: var(--grey);
+            text-align: center;
+        }
+
+        .about-text strong {
+            color: var(--blue);
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            background: var(--black);
+            border: 2px solid var(--dark-grey);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            border-color: var(--blue);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+            font-weight: 900;
+            font-size: 2.5rem;
+            color: var(--blue);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0.75rem;
+            color: var(--grey);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--dark-grey);
+            border: 2px solid var(--black);
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--blue);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover {
+            transform: translateX(10px);
+            border-color: var(--blue);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-number {
+            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+            font-weight: 900;
+            font-size: 4rem;
+            color: var(--blue);
+            opacity: 0.15;
+            position: absolute;
+            top: 0;
+            right: 1rem;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .service-title {
+            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--light-grey);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-desc {
+            font-size: 1rem;
+            font-weight: 300;
+            line-height: 1.7;
+            color: var(--grey);
+        }
+
+        #contact {
+            background: var(--dark-grey);
+        }
+
+        .contact-layout {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-title {
+            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--light-grey);
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .contact-title span {
+            color: var(--blue);
+        }
+
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            background: var(--black);
+            border-left: 4px solid var(--blue);
+            transition: transform 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateX(10px);
+        }
+
+        .contact-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--blue);
+        }
+
+        .contact-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--light-grey);
+        }
+
+        .contact-value a {
+            color: var(--light-grey);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-value a:hover {
+            color: var(--blue);
+        }
+
+        .cta-container {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--blue);
+            color: var(--light-grey);
+            text-decoration: none;
+            padding: 1.25rem 2.5rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(35, 35, 255, 0.4);
+        }
+
+        footer {
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 2px solid var(--dark-grey);
+        }
+
+        .footer-brand {
+            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+            font-weight: 900;
+            font-size: 1.25rem;
+            color: var(--light-grey);
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-copyright {
+            font-size: 0.8rem;
+            color: var(--grey);
+        }
+
+        @media (min-width: 768px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            header {
+                min-height: 100vh;
+            }
+
+            section {
+                padding: 7rem 0;
+            }
+
+            .service-card {
+                padding: 3rem;
+            }
+
+            .about-text {
+                font-size: 1.25rem;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>J&A<br><span>Printhaus</span></h1>
+                <p class="tagline">Direct-to-Wall Printing Specialists</p>
+                <nav>
+                    <a href="#about">About</a>
+                    <a href="#services">Services</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="about">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <span class="section-label">Who We Are</span>
+                    <h2 class="section-title">About Us</h2>
+                </div>
+                <div class="about-content">
+                    <p class="about-text fade-in">At J&A Print House, we specialize in <strong>direct-to-wall printing</strong>, offering a unique and efficient way to customize interiors and exteriors. Whether it's for commercial spaces, residential homes, or special events, our cutting-edge technology ensures stunning results that bring your visions to life. We are committed to delivering exceptional quality, creativity, and customer satisfaction.</p>
+                    <div class="stats-grid">
+                        <div class="stat-item fade-in">
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">Possibilities</div>
+                        </div>
+                        <div class="stat-item fade-in">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Quality</div>
+                        </div>
+                        <div class="stat-item fade-in">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Dedication</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <span class="section-label">What We Do</span>
+                    <h2 class="section-title">Our Services</h2>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card fade-in">
+                        <div class="service-number">01</div>
+                        <h3 class="service-title">Custom Wall Murals</h3>
+                        <p class="service-desc">Transform your residential and commercial properties with stunning, personalized wall murals that make a statement.</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-number">02</div>
+                        <h3 class="service-title">Branding & Advertising</h3>
+                        <p class="service-desc">Elevate your business with eye-catching graphics and branding solutions that capture attention and leave a lasting impression.</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-number">03</div>
+                        <h3 class="service-title">Event Backdrops</h3>
+                        <p class="service-desc">Create memorable promotional installations and event backdrops that enhance any special occasion or corporate event.</p>
+                    </div>
+                    <div class="service-card fade-in">
+                        <div class="service-number">04</div>
+                        <h3 class="service-title">Artistic Designs</h3>
+                        <p class="service-desc">Bring creativity to your space with our artistic designs and decorative patterns, tailored to your unique style and vision.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <div class="contact-layout">
+                    <h2 class="contact-title fade-in">Let's Create<br><span>Together</span></h2>
+                    <div class="contact-list">
+                        <div class="contact-item fade-in">
+                            <div class="contact-label">Business</div>
+                            <div class="contact-value">J&A Printhaus</div>
+                        </div>
+                        <div class="contact-item fade-in">
+                            <div class="contact-label">Email</div>
+                            <div class="contact-value"><a href="mailto:japrinthaus@gmail.com">japrinthaus@gmail.com</a></div>
+                        </div>
+                        <div class="contact-item fade-in">
+                            <div class="contact-label">Jaime Maya</div>
+                            <div class="contact-value"><a href="tel:5088510997">508-851-0997</a></div>
+                        </div>
+                        <div class="contact-item fade-in">
+                            <div class="contact-label">Antonio Velazquez</div>
+                            <div class="contact-value"><a href="tel:3479984933">347-998-4933</a></div>
+                        </div>
+                    </div>
+                    <div class="cta-container fade-in">
+                        <a href="mailto:japrinthaus@gmail.com" class="cta-button">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-brand">J&A Printhaus</div>
+            <div class="footer-copyright">&copy; 2026 All rights reserved</div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+
+            function checkFade() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add('visible');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', checkFade);
+            checkFade();
+        });
+    </script>
+</body>
+</html>
