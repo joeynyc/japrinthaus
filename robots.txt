@@ -1,0 +1,22 @@
+# J&A Printhaus robots.txt
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow private/admin paths (if any exist in future)
+Disallow: /admin/
+Disallow: /private/
+
+# Sitemap location
+Sitemap: https://japrinthaus.com/sitemap.xml
+
+# Specific rules for common search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Crawl delay (optional - 1 second between requests)
+Crawl-delay: 1
