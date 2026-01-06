@@ -46,6 +46,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Inline error messages and form status display
 - CSRF token generation on page load
 - Input sanitization to prevent XSS
+- Client-side rate limiting (5 submissions per hour using localStorage)
+- Countdown timer showing when user can submit again
 - Sends to `/api/contact` endpoint (backend not yet implemented)
 
 **Navigation**:
@@ -108,6 +110,25 @@ In `js/main.js` - `validateField()` function:
 
 Validation runs on blur and input (real-time feedback).
 
+### Rate Limiting (Client-Side)
+In `js/main.js` - Rate limiting functions:
+- **Configuration**: 5 submissions per 1-hour rolling window
+- **Storage**: Uses browser localStorage with key `form_submissions`
+- **Implementation**:
+  - `checkRateLimit()` - Validates if submission is allowed
+  - `recordSubmission()` - Tracks submission timestamp after success
+  - `cleanupOldSubmissions()` - Removes entries older than 1 hour
+  - `showRateLimitMessage()` - Displays countdown timer (updates every second)
+- **Features**:
+  - Countdown timer shows exact time until form re-enables
+  - Checks on page load and before each submission
+  - Prevents submission if limit exceeded
+  - Automatically cleans up expired entries
+  - Data validated to prevent corrupted localStorage
+  - Multiple interval leak prevention
+- **UX**: When limit reached, button text changes to "Limit Reached" and countdown displays
+- **Note**: This is a client-side enhancement. Implement server-side rate limiting for production security.
+
 ### Color Scheme
 ```css
 --black: #000000
@@ -164,6 +185,7 @@ The skill provides creative direction, production-grade implementation, and prev
 ### Modifying js/main.js
 - **Mobile Menu**: Functions at top - `toggleMobileMenu()`, `openMobileMenu()`, `closeMobileMenu()`
 - **Form Validation**: `validateField()` and `validateForm()` functions
+- **Rate Limiting**: `checkRateLimit()`, `recordSubmission()`, `cleanupOldSubmissions()`, `showRateLimitMessage()`
 - **Navigation**: Scroll effects and smooth scroll behavior below
 - **Intersection Observer**: Scroll animation triggers at bottom
 
@@ -226,6 +248,7 @@ See `SECURITY-HEADERS.md` for configuration:
 ## Known Limitations & TODOs
 
 - **Form Backend**: Currently only client-side validation. Backend `/api/contact` not implemented.
+- **Server-Side Rate Limiting**: Client-side rate limiting implemented (localStorage). Implement server-side rate limiting for production.
 - **Email**: No email notifications configured
 - **Database**: No form data storage
 - **Analytics**: Google Analytics not integrated
@@ -240,9 +263,10 @@ See `SECURITY-HEADERS.md` for configuration:
 
 ## Recent Changes (Latest Commits)
 
+- `de6a774` - Fix critical rate limiting issues and add data validation (countdown timer leak prevention, localStorage validation)
+- `4e815d0` - Add frontend design skill requirement to CLAUDE.md
 - `15cb938` - Fix hero background image path to use local wall16.png
 - `2ea8bad` - Add mobile hamburger menu, security hardening, form validation
-- `f6d1207` - Remove hero logo integration
 
 ## References
 
