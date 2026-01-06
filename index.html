@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J&A Printhaus — Direct-to-Wall Printing</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>J&A PrintHaus | Direct to Wall Printing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -13,576 +21,1559 @@
 
         :root {
             --black: #000000;
+            --dark-gray: #141414;
+            --silver: #c4c4c4;
+            --light-silver: #e0e0e0;
             --blue: #2323ff;
-            --grey: #c4c4c4;
-            --dark-grey: #1a1a1a;
-            --light-grey: #e0e0e0;
+            --bright-blue: #4444ff;
+            --white: #ffffff;
         }
 
         html {
             scroll-behavior: smooth;
-            font-size: 16px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: var(--grey);
+            font-family: 'Inter', sans-serif;
             background-color: var(--black);
+            color: var(--white);
+            line-height: 1.6;
             overflow-x: hidden;
-            min-height: 100vh;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        header {
-            padding: 4rem 0;
-            min-height: 90vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            background: linear-gradient(135deg, var(--black) 0%, var(--dark-grey) 100%);
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
+        /* Navigation */
+        .nav {
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            bottom: 0;
-            background: 
-                linear-gradient(90deg, rgba(35, 35, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(rgba(35, 35, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.95), transparent);
+            transition: background 0.3s ease;
         }
 
-        .header-content {
-            text-align: center;
-            position: relative;
-            z-index: 2;
+        .nav.scrolled {
+            background: rgba(10, 10, 10, 0.98);
+            border-bottom: 1px solid rgba(192, 192, 192, 0.2);
         }
 
-        h1 {
-            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2.5rem, 10vw, 6rem);
-            color: var(--light-grey);
-            line-height: 0.95;
-            letter-spacing: -3px;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
+        .nav-logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--white);
+            text-decoration: none;
         }
 
-        h1 span {
+        .nav-logo span {
             color: var(--blue);
+        }
+
+        .nav-links {
+            /* Mobile: Slide-in menu from right */
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 320px;
+            height: 100vh;
+            background: var(--dark-gray);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+            z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 2rem;
+            border-left: 1px solid rgba(192, 192, 192, 0.2);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-links.active {
+            right: 0;
+        }
+
+        .nav-links li {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-links.active li {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Staggered animation for menu items */
+        .nav-links.active li:nth-child(1) { transition-delay: 0.1s; }
+        .nav-links.active li:nth-child(2) { transition-delay: 0.15s; }
+        .nav-links.active li:nth-child(3) { transition-delay: 0.2s; }
+        .nav-links.active li:nth-child(4) { transition-delay: 0.25s; }
+        .nav-links.active li:nth-child(5) { transition-delay: 0.3s; }
+
+        .nav-links a {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--silver);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
             display: block;
         }
 
-        .tagline {
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            font-weight: 300;
-            color: var(--grey);
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 3rem;
+        .nav-links a:hover {
+            color: var(--blue);
         }
 
-        nav {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        nav a {
-            color: var(--light-grey);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
+        .nav-cta {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            padding: 0.75rem 1.5rem;
-            border: 2px solid var(--dark-grey);
-            background: var(--dark-grey);
+            padding: 0.6rem 1.2rem;
+            background: var(--blue);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
             transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-cta:hover {
+            background: var(--bright-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Hamburger Menu Button */
+        .nav-hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
             position: relative;
+        }
+
+        .hamburger-line {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: var(--white);
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        /* Hamburger animation - X when open */
+        .nav-hamburger.active .hamburger-line:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .nav-hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+
+        .nav-hamburger.active .hamburger-line:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* Mobile Menu Overlay */
+        .nav-mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-mobile-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Mobile CTA in menu */
+        .nav-mobile-cta {
+            display: block;
+            margin-top: 1rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(192, 192, 192, 0.2);
+        }
+
+        .nav-mobile-cta a {
+            background: var(--blue);
+            color: var(--white) !important;
+            padding: 1rem 2rem;
+            border-radius: 0;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .nav-mobile-cta a:hover {
+            background: var(--bright-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Hide desktop CTA on mobile */
+        .nav-cta {
+            display: none;
+        }
+
+        /* Prevent body scroll when menu is open */
+        body.menu-open {
             overflow: hidden;
         }
 
-        nav a::before {
-            content: '';
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+
+        .hero-bg {
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 3px;
-            background: var(--blue);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease;
+            height: 100%;
+            z-index: 0;
         }
 
-        nav a:hover {
-            border-color: var(--blue);
-            color: var(--light-grey);
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6) contrast(1.1);
         }
 
-        nav a:hover::before {
-            transform: scaleX(1);
-            transform-origin: left;
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(10, 10, 10, 0.8) 0%,
+                rgba(10, 10, 10, 0.4) 50%,
+                rgba(0, 102, 255, 0.15) 100%
+            );
+            z-index: 1;
         }
 
-        section {
-            padding: 5rem 0;
+        .hero-content {
             position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 1400px;
+            padding: 0 1.5rem;
+        }
+
+        .hero-issue {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            color: var(--white);
+            margin-bottom: 2.5rem;
+            display: inline-block;
+            border: 2px solid var(--blue);
+            padding: 1rem 2rem;
+            background: rgba(35, 35, 255, 0.1);
+            backdrop-filter: blur(4px);
+            text-transform: uppercase;
+            box-shadow: 0 8px 32px rgba(35, 35, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .hero-issue:hover {
+            background: rgba(35, 35, 255, 0.2);
+            border-color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(35, 35, 255, 0.25);
+        }
+
+        .hero-headline {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 10rem);
+            font-weight: 700;
+            line-height: 0.85;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-headline .line {
+            display: block;
+        }
+
+        .hero-headline .accent {
+            color: var(--blue);
+            font-style: italic;
+        }
+
+        .hero-subheadline {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--light-silver);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 1.2rem 3rem;
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .hero-cta:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--silver);
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0;
+            animation: fadeInScroll 1s ease 1.5s forwards;
+        }
+
+        .hero-scroll:hover {
+            color: var(--blue);
+        }
+
+        .hero-scroll:hover .hero-scroll-line {
+            background: linear-gradient(to bottom, var(--blue), var(--blue), transparent);
+        }
+
+        .hero-scroll:hover .hero-scroll-chevron {
+            transform: translateY(4px);
+            border-color: var(--blue);
+        }
+
+        @keyframes fadeInScroll {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .hero-scroll-line {
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(to bottom, var(--silver), transparent);
+            transition: background 0.3s ease;
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% {
+                opacity: 0.5;
+                height: 50px;
+            }
+            50% {
+                opacity: 1;
+                height: 60px;
+            }
+        }
+
+        .hero-scroll-chevron {
+            width: 10px;
+            height: 10px;
+            border-right: 2px solid var(--silver);
+            border-bottom: 2px solid var(--silver);
+            transform: rotate(45deg);
+            margin-top: -5px;
+            transition: all 0.3s ease;
+            animation: chevronBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes chevronBounce {
+            0%, 100% {
+                transform: rotate(45deg) translateY(0);
+            }
+            50% {
+                transform: rotate(45deg) translateY(5px);
+            }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 3rem 1.5rem;
         }
 
         .section-header {
-            margin-bottom: 4rem;
-            text-align: center;
-        }
-
-        .section-label {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--blue);
-            margin-bottom: 1rem;
-            padding: 0.5rem 1rem;
-            background: var(--dark-grey);
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(192, 192, 192, 0.3);
+            padding-bottom: 1.5rem;
         }
 
         .section-title {
-            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            color: var(--light-grey);
-            line-height: 1.1;
-            letter-spacing: -2px;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.01em;
         }
 
-        #about {
-            background: var(--dark-grey);
+        .section-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            color: var(--blue);
+            letter-spacing: 0.3em;
         }
 
-        .about-content {
-            max-width: 800px;
-            margin: 0 auto;
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            border: 1px solid rgba(192, 192, 192, 0.3);
+            border-bottom: none;
+        }
+
+        .service-card {
+            padding: 2rem 1.5rem;
+            border-right: none;
+            border-bottom: 1px solid rgba(192, 192, 192, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .service-card:last-child {
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .service-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: rgba(192, 192, 192, 0.2);
+            line-height: 1;
+            margin-bottom: 2rem;
+            transition: color 0.4s ease;
+        }
+
+        .service-card:hover .service-number {
+            color: var(--blue);
+        }
+
+        .service-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            transition: color 0.4s ease;
+        }
+
+        .service-desc {
+            font-size: 0.95rem;
+            color: var(--silver);
+            line-height: 1.8;
+            transition: color 0.4s ease;
+        }
+
+        .service-card:hover {
+            background: var(--dark-gray);
+        }
+
+        .service-card:hover .service-title {
+            color: var(--blue);
+        }
+
+        .service-card:hover .service-desc {
+            color: var(--light-silver);
+        }
+
+        /* Portfolio Section */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto;
+            gap: 1rem;
+        }
+
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(30%);
+            transition: all 0.5s ease;
+        }
+
+        .portfolio-item:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(10, 10, 10, 0.95), transparent);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            transform: translateY(0);
+        }
+
+        .portfolio-item {
+            height: 200px;
+        }
+
+        .portfolio-item.large {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        .portfolio-item.tall {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        .portfolio-item.medium {
+            grid-column: span 1;
+        }
+
+        .portfolio-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .portfolio-category {
+            font-size: 0.85rem;
+            color: var(--blue);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        /* About Section */
+        .about-section {
+            background: var(--dark-gray);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .about-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.75rem;
+            color: var(--blue);
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            writing-mode: horizontal-tb;
+            text-orientation: mixed;
+            transform: none;
+        }
+
+        .about-content h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+        }
+
+        .about-content h3 span {
+            color: var(--blue);
+            font-style: italic;
         }
 
         .about-text {
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            font-weight: 300;
-            line-height: 1.9;
-            color: var(--grey);
-            text-align: center;
-        }
-
-        .about-text strong {
-            color: var(--blue);
-            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--silver);
+            line-height: 2;
+            margin-bottom: 2rem;
+            max-width: 800px;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: 1fr;
             gap: 2rem;
-            margin-top: 4rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(192, 192, 192, 0.2);
         }
 
         .stat-item {
-            text-align: center;
-            padding: 2rem;
-            background: var(--black);
-            border: 2px solid var(--dark-grey);
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            border-color: var(--blue);
-            transform: translateY(-5px);
+            text-align: left;
         }
 
         .stat-number {
-            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
-            font-weight: 900;
-            font-size: 2.5rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
             color: var(--blue);
             line-height: 1;
         }
 
         .stat-label {
-            font-size: 0.7rem;
-            font-weight: 600;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.85rem;
+            color: var(--silver);
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 0.75rem;
-            color: var(--grey);
+            margin-top: 0.5rem;
         }
 
-        .services-grid {
+        /* Process Section */
+        .process-section {
+            background: var(--black);
+        }
+
+        .process-timeline {
             display: grid;
             grid-template-columns: 1fr;
             gap: 2rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .service-card {
-            background: var(--dark-grey);
-            border: 2px solid var(--black);
-            padding: 2.5rem;
             position: relative;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
         }
 
-        .service-card::before {
+        .process-timeline::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--blue);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            left: 20px;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--blue), var(--silver), var(--blue), var(--silver));
+            display: none;
         }
 
-        .service-card:hover {
-            transform: translateX(10px);
-            border-color: var(--blue);
-        }
-
-        .service-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .service-number {
-            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
-            font-weight: 900;
-            font-size: 4rem;
-            color: var(--blue);
-            opacity: 0.15;
-            position: absolute;
-            top: 0;
-            right: 1rem;
-            line-height: 1;
-            pointer-events: none;
-        }
-
-        .service-title {
-            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
-            font-weight: 900;
-            font-size: 1.5rem;
-            color: var(--light-grey);
-            margin-bottom: 1rem;
+        .process-step {
+            text-align: left;
+            padding: 2rem 2rem 2rem 4rem;
             position: relative;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--black);
+            border: 2px solid var(--blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0 1rem 0;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--blue);
+            position: absolute;
+            left: 0;
+            top: 0;
             z-index: 1;
         }
 
-        .service-desc {
-            font-size: 1rem;
-            font-weight: 300;
-            line-height: 1.7;
-            color: var(--grey);
+        .step-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
         }
 
-        #contact {
-            background: var(--dark-grey);
+        .step-desc {
+            font-size: 0.95rem;
+            color: var(--silver);
+            line-height: 1.8;
         }
 
-        .contact-layout {
-            max-width: 800px;
-            margin: 0 auto;
+        /* Contact Section */
+        .contact-section {
+            background: linear-gradient(135deg, var(--dark-gray) 0%, var(--black) 100%);
         }
 
-        .contact-title {
-            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
-            font-weight: 900;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            color: var(--light-grey);
-            line-height: 1.1;
-            letter-spacing: -2px;
-            margin-bottom: 3rem;
-            text-align: center;
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
         }
 
-        .contact-title span {
+        .contact-info h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 2rem;
+        }
+
+        .contact-info h2 span {
             color: var(--blue);
         }
 
-        .contact-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+        .contact-desc {
+            font-size: 1.1rem;
+            color: var(--silver);
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            max-width: 400px;
+        }
+
+        .contact-details {
+            margin-bottom: 3rem;
         }
 
         .contact-item {
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            padding: 1.5rem;
-            background: var(--black);
-            border-left: 4px solid var(--blue);
-            transition: transform 0.3s ease;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            color: var(--light-silver);
         }
 
-        .contact-item:hover {
-            transform: translateX(10px);
+        .contact-item span {
+            color: var(--blue);
+            font-size: 1.2rem;
         }
 
-        .contact-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 3px;
+        .contact-form {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2rem 1.5rem;
+            border: 1px solid rgba(192, 192, 192, 0.2);
+        }
+
+        .form-row {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: var(--blue);
+            color: var(--silver);
+            margin-bottom: 0.5rem;
         }
 
-        .contact-value {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--light-grey);
+        .form-input {
+            width: 100%;
+            padding: 1rem 0;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(192, 192, 192, 0.3);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: var(--white);
+            transition: border-color 0.3s ease;
         }
 
-        .contact-value a {
-            color: var(--light-grey);
-            text-decoration: none;
-            transition: color 0.3s ease;
+        .form-input::placeholder {
+            color: var(--silver);
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
         }
 
-        .contact-value a:hover {
-            color: var(--blue);
+        .form-input:focus {
+            outline: none;
+            border-bottom-color: var(--blue);
         }
 
-        .cta-container {
-            text-align: center;
-            margin-top: 3rem;
+        .form-input:invalid:not(:placeholder-shown) {
+            border-bottom-color: #ff4444;
         }
 
-        .cta-button {
-            display: inline-block;
+        .form-error {
+            display: block;
+            font-size: 0.85rem;
+            color: #ff4444;
+            margin-top: 0.25rem;
+            min-height: 1.2rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-status {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .form-status.success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #90EE90;
+            display: block;
+        }
+
+        .form-status.error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            color: #ff4444;
+            display: block;
+        }
+
+        .form-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-textarea {
+            resize: none;
+            min-height: 120px;
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 1.2rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
             background: var(--blue);
-            color: var(--light-grey);
-            text-decoration: none;
-            padding: 1.25rem 2.5rem;
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            color: var(--white);
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .cta-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 40px rgba(35, 35, 255, 0.4);
+        .form-submit:hover {
+            background: var(--bright-blue);
         }
 
-        footer {
-            padding: 3rem 0;
+        /* Footer */
+        .footer {
+            background: var(--black);
+            padding: 2rem 1.5rem;
+            border-top: 1px solid rgba(192, 192, 192, 0.2);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
             text-align: center;
-            border-top: 2px solid var(--dark-grey);
         }
 
-        .footer-brand {
-            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
-            font-weight: 900;
-            font-size: 1.25rem;
-            color: var(--light-grey);
-            margin-bottom: 0.5rem;
+        .footer-logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--white);
+        }
+
+        .footer-logo span {
+            color: var(--blue);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-social a {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.85rem;
+            color: var(--silver);
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            transition: color 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            color: var(--blue);
         }
 
         .footer-copyright {
-            font-size: 0.8rem;
-            color: var(--grey);
+            font-size: 0.85rem;
+            color: var(--silver);
         }
 
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        /* Responsive - Mobile First Design */
         @media (min-width: 768px) {
+            .nav {
+                padding: 1.2rem 3rem;
+            }
+
+            .nav-logo {
+                font-size: 1.3rem;
+                letter-spacing: 0.3em;
+            }
+
+            /* Hide hamburger on tablet/desktop */
+            .nav-hamburger {
+                display: none;
+            }
+
+            /* Reset nav-links for desktop */
+            .nav-links {
+                position: static;
+                width: auto;
+                max-width: none;
+                height: auto;
+                background: transparent;
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 3rem;
+                padding: 0;
+                border-left: none;
+                box-shadow: none;
+                display: flex;
+            }
+
+            .nav-links li {
+                opacity: 1;
+                transform: none;
+            }
+
+            .nav-links a {
+                font-size: 0.85rem;
+                padding: 0;
+            }
+
+            /* Hide mobile CTA in menu, show desktop CTA */
+            .nav-mobile-cta {
+                display: none;
+            }
+
+            .nav-cta {
+                display: inline-block;
+                font-size: 0.85rem;
+                padding: 0.8rem 2rem;
+            }
+
+            /* Hide mobile overlay on desktop */
+            .nav-mobile-overlay {
+                display: none !important;
+            }
+
+            section {
+                padding: 5rem 3rem;
+            }
+
+            .section-header {
+                margin-bottom: 3rem;
+                padding-bottom: 2rem;
+            }
+
             .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .service-card {
+                padding: 2.5rem 2rem;
+                border-right: 1px solid rgba(192, 192, 192, 0.3);
+                border-bottom: none;
+            }
+
+            .service-card:nth-child(even) {
+                border-right: none;
+            }
+
+            .portfolio-grid {
+                gap: 1.2rem;
+            }
+
+            .portfolio-item {
+                height: 250px;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr 2fr;
+                gap: 4rem;
+            }
+
+            .about-label {
+                font-size: 0.85rem;
+                writing-mode: vertical-rl;
+                text-orientation: mixed;
+                transform: rotate(180deg);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2.5rem;
+                margin-top: 3rem;
+                padding-top: 3rem;
+            }
+
+            .process-timeline {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 2rem;
             }
 
-            .stats-grid {
-                grid-template-columns: repeat(3, 1fr);
+            .process-step {
+                padding: 3rem 1.5rem;
+                text-align: center;
+            }
+
+            .step-number {
+                position: relative;
+                width: 60px;
+                height: 60px;
+                margin: 0 auto 1.5rem;
+                font-size: 1.3rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+            }
+
+            .contact-form {
+                padding: 2.5rem;
+            }
+
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+                gap: 0;
+            }
+
+            .footer-logo {
+                font-size: 1.1rem;
+            }
+
+            .hero-scroll {
+                display: flex;
             }
         }
 
         @media (min-width: 1024px) {
-            header {
-                min-height: 100vh;
+            .nav {
+                padding: 1.5rem 4rem;
+            }
+
+            .nav-logo {
+                font-size: 1.5rem;
+                letter-spacing: 0.3em;
             }
 
             section {
-                padding: 7rem 0;
+                padding: 8rem 4rem;
+            }
+
+            .section-header {
+                margin-bottom: 4rem;
+                padding-bottom: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
 
             .service-card {
+                padding: 4rem 3rem;
+                border-right: 1px solid rgba(192, 192, 192, 0.3);
+                border-bottom: none;
+            }
+
+            .service-card:last-child {
+                border-right: none;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: repeat(12, 1fr);
+                grid-template-rows: repeat(2, 300px);
+                gap: 1.5rem;
+            }
+
+            .portfolio-item {
+                height: auto;
+            }
+
+            .portfolio-item.large {
+                grid-column: span 6;
+                grid-row: span 2;
+            }
+
+            .portfolio-item.tall {
+                grid-column: span 4;
+                grid-row: span 2;
+            }
+
+            .portfolio-item.medium {
+                grid-column: span 4;
+            }
+
+            .about-grid {
+                gap: 6rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 3rem;
+                margin-top: 4rem;
+                padding-top: 4rem;
+            }
+
+            .process-timeline {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 0;
+            }
+
+            .process-timeline::before {
+                display: block;
+                position: absolute;
+                top: 40px;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: 2px;
+                background: linear-gradient(to right, var(--blue), var(--silver), var(--blue), var(--silver));
+            }
+
+            .process-step {
+                padding: 4rem 2rem;
+                text-align: center;
+            }
+
+            .step-number {
+                position: relative;
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 2rem;
+                font-size: 1.5rem;
+                left: auto;
+                top: auto;
+            }
+
+            .contact-grid {
+                gap: 6rem;
+            }
+
+            .contact-form {
                 padding: 3rem;
             }
 
-            .about-text {
-                font-size: 1.25rem;
+            .footer {
+                padding: 3rem 4rem;
             }
-        }
 
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
+            .footer-content {
+                gap: 0;
+            }
 
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+            .footer-logo {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <h1>J&A<br><span>Printhaus</span></h1>
-                <p class="tagline">Direct-to-Wall Printing Specialists</p>
-                <nav>
-                    <a href="#about">About</a>
-                    <a href="#services">Services</a>
-                    <a href="#contact">Contact</a>
-                </nav>
-            </div>
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="#" class="nav-logo">J&A <span>PRINTHAUS</span></a>
+
+        <!-- Mobile Menu Button -->
+        <button class="nav-hamburger" id="navHamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="nav-mobile-overlay" id="navMobileOverlay"></div>
+
+        <!-- Navigation Links -->
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#portfolio">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#process">Process</a></li>
+            <li class="nav-mobile-cta"><a href="#contact">Get Quote</a></li>
+        </ul>
+
+        <a href="#contact" class="nav-cta">Get Quote</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-bg">
+            <img src="user_input_files/wall16.png" alt="Restaurant with mural on wall">
         </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-issue">Quality That Lasts</span>
+            <h1 class="hero-headline">
+                <span class="line">Direct</span>
+                <span class="line">To <span class="accent">Wall</span></span>
+                <span class="line">Printing</span>
+            </h1>
+            <p class="hero-subheadline">Transforming spaces into visual statements</p>
+            <a href="#contact" class="hero-cta">
+                Start Your Project
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+        <a href="#services" class="hero-scroll" aria-label="Scroll to services section">
+            <span>Explore</span>
+            <div class="hero-scroll-line"></div>
+            <div class="hero-scroll-chevron"></div>
+        </a>
     </header>
 
-    <main>
-        <section id="about">
-            <div class="container">
-                <div class="section-header fade-in">
-                    <span class="section-label">Who We Are</span>
-                    <h2 class="section-title">About Us</h2>
+    <!-- Services Section -->
+    <section id="services">
+        <div class="section-header">
+            <h2 class="section-title">Our Services</h2>
+            <span class="section-number">01</span>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-number">01</div>
+                <h3 class="service-title">Custom Wall Murals</h3>
+                <p class="service-desc">Professional murals for residential and commercial properties. We bring your vision to life with stunning, high-quality direct-to-wall printing that transforms any space.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-number">02</div>
+                <h3 class="service-title">Branding & Advertising</h3>
+                <p class="service-desc">Branding and advertising graphics for businesses. Make your brand stand out with impactful visual solutions that capture attention and drive engagement.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-number">03</div>
+                <h3 class="service-title">Events & Installations</h3>
+                <p class="service-desc">Event backdrops and promotional installations. Create memorable experiences with custom-designed graphics tailored to your specific needs and vision.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio">
+        <div class="section-header">
+            <h2 class="section-title">Recent Work</h2>
+            <span class="section-number">02</span>
+        </div>
+        <div class="portfolio-grid">
+            <div class="portfolio-item large">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&q=80" alt="Restaurant interior mural">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Urban Kitchen</h4>
+                    <span class="portfolio-category">Hospitality</span>
                 </div>
-                <div class="about-content">
-                    <p class="about-text fade-in">At J&A Print House, we specialize in <strong>direct-to-wall printing</strong>, offering a unique and efficient way to customize interiors and exteriors. Whether it's for commercial spaces, residential homes, or special events, our cutting-edge technology ensures stunning results that bring your visions to life. We are committed to delivering exceptional quality, creativity, and customer satisfaction.</p>
-                    <div class="stats-grid">
-                        <div class="stat-item fade-in">
-                            <div class="stat-number">∞</div>
-                            <div class="stat-label">Possibilities</div>
-                        </div>
-                        <div class="stat-item fade-in">
-                            <div class="stat-number">100%</div>
-                            <div class="stat-label">Quality</div>
-                        </div>
-                        <div class="stat-item fade-in">
-                            <div class="stat-number">24/7</div>
-                            <div class="stat-label">Dedication</div>
-                        </div>
+            </div>
+            <div class="portfolio-item tall">
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Corporate office wall art">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Tech Hub HQ</h4>
+                    <span class="portfolio-category">Commercial</span>
+                </div>
+            </div>
+            <div class="portfolio-item medium">
+                <img src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=800&q=80" alt="Artistic mural detail">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Art District</h4>
+                    <span class="portfolio-category">Residential</span>
+                </div>
+            </div>
+            <div class="portfolio-item medium">
+                <img src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=800&q=80" alt="Geometric pattern wall">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Modern Space</h4>
+                    <span class="portfolio-category">Commercial</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="about-grid">
+            <div class="about-label">The Technology</div>
+            <div class="about-content">
+                <h3>We Specialize In<br><span>Direct-To-Wall Printing.</span></h3>
+                <p class="about-text">At J&A Print House, we specialize in direct-to-wall printing, offering a unique and efficient way to customize interiors and exteriors. Whether it's for commercial spaces, residential homes, or special events, our cutting-edge technology ensures stunning results that bring your visions to life.</p>
+                <p class="about-text">We are committed to delivering exceptional quality, creativity, and customer satisfaction in every project we undertake.</p>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">100+</div>
+                        <div class="stat-label">Projects Completed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">25K</div>
+                        <div class="stat-label">Sq Ft Printed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Client Satisfaction</div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="services">
-            <div class="container">
-                <div class="section-header fade-in">
-                    <span class="section-label">What We Do</span>
-                    <h2 class="section-title">Our Services</h2>
-                </div>
-                <div class="services-grid">
-                    <div class="service-card fade-in">
-                        <div class="service-number">01</div>
-                        <h3 class="service-title">Custom Wall Murals</h3>
-                        <p class="service-desc">Transform your residential and commercial properties with stunning, personalized wall murals that make a statement.</p>
+    <!-- Process Section -->
+    <section id="process" class="process-section">
+        <div class="section-header">
+            <h2 class="section-title">Our Process</h2>
+            <span class="section-number">03</span>
+        </div>
+        <div class="process-timeline">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <h4 class="step-title">Consultation</h4>
+                <p class="step-desc">We discuss your vision, assess the surface, and recommend the best printing solution for your space.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <h4 class="step-title">Design</h4>
+                <p class="step-desc">Our artists create or refine your artwork, ensuring perfect scaling and color accuracy for the space.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <h4 class="step-title">Print</h4>
+                <p class="step-desc">Using our industrial UV printers, we apply your artwork directly to the wall with micron-level precision.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <h4 class="step-title">Complete</h4>
+                <p class="step-desc">Final inspection ensures perfection. Your space is transformed instantly with zero downtime.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="section-header">
+            <h2 class="section-title">Get In Touch</h2>
+            <span class="section-number">04</span>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h2>Let's Print<br><span>Your Vision</span></h2>
+                <p class="contact-desc">Ready to transform your space? Contact us for a free consultation and quote. We'll bring your walls to life.</p>
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <span>&#9993;</span>
+                        japrinthaus@gmail.com
                     </div>
-                    <div class="service-card fade-in">
-                        <div class="service-number">02</div>
-                        <h3 class="service-title">Branding & Advertising</h3>
-                        <p class="service-desc">Elevate your business with eye-catching graphics and branding solutions that capture attention and leave a lasting impression.</p>
+                    <div class="contact-item">
+                        <span>&#9742;</span>
+                        Jaime Maya: 508-851-0997
                     </div>
-                    <div class="service-card fade-in">
-                        <div class="service-number">03</div>
-                        <h3 class="service-title">Event Backdrops</h3>
-                        <p class="service-desc">Create memorable promotional installations and event backdrops that enhance any special occasion or corporate event.</p>
-                    </div>
-                    <div class="service-card fade-in">
-                        <div class="service-number">04</div>
-                        <h3 class="service-title">Artistic Designs</h3>
-                        <p class="service-desc">Bring creativity to your space with our artistic designs and decorative patterns, tailored to your unique style and vision.</p>
+                    <div class="contact-item">
+                        <span>&#9742;</span>
+                        Antonio Velazquez: 347-998-4933
                     </div>
                 </div>
             </div>
-        </section>
+            <form class="contact-form" id="contactForm" method="POST" action="/api/contact" novalidate>
+                <input type="hidden" name="csrf_token" id="csrf_token" value="">
 
-        <section id="contact">
-            <div class="container">
-                <div class="contact-layout">
-                    <h2 class="contact-title fade-in">Let's Create<br><span>Together</span></h2>
-                    <div class="contact-list">
-                        <div class="contact-item fade-in">
-                            <div class="contact-label">Business</div>
-                            <div class="contact-value">J&A Printhaus</div>
-                        </div>
-                        <div class="contact-item fade-in">
-                            <div class="contact-label">Email</div>
-                            <div class="contact-value"><a href="mailto:japrinthaus@gmail.com">japrinthaus@gmail.com</a></div>
-                        </div>
-                        <div class="contact-item fade-in">
-                            <div class="contact-label">Jaime Maya</div>
-                            <div class="contact-value"><a href="tel:5088510997">508-851-0997</a></div>
-                        </div>
-                        <div class="contact-item fade-in">
-                            <div class="contact-label">Antonio Velazquez</div>
-                            <div class="contact-value"><a href="tel:3479984933">347-998-4933</a></div>
-                        </div>
-                    </div>
-                    <div class="cta-container fade-in">
-                        <a href="mailto:japrinthaus@gmail.com" class="cta-button">Get Started</a>
-                    </div>
+                <div class="form-row">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        class="form-input"
+                        placeholder="Your Name"
+                        required
+                        maxlength="100"
+                        pattern="[A-Za-z\s\-']+"
+                        autocomplete="name"
+                        aria-label="Your Name"
+                        aria-required="true">
+                    <span class="form-error" id="name-error"></span>
                 </div>
-            </div>
-        </section>
-    </main>
 
-    <footer>
-        <div class="container">
-            <div class="footer-brand">J&A Printhaus</div>
-            <div class="footer-copyright">&copy; 2026 All rights reserved</div>
+                <div class="form-row">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-input"
+                        placeholder="Email Address"
+                        required
+                        maxlength="254"
+                        autocomplete="email"
+                        aria-label="Email Address"
+                        aria-required="true">
+                    <span class="form-error" id="email-error"></span>
+                </div>
+
+                <div class="form-row">
+                    <label for="project_type" class="form-label">Project Type</label>
+                    <input
+                        type="text"
+                        id="project_type"
+                        name="project_type"
+                        class="form-input"
+                        placeholder="Project Type"
+                        required
+                        maxlength="100"
+                        autocomplete="off"
+                        aria-label="Project Type"
+                        aria-required="true">
+                    <span class="form-error" id="project_type-error"></span>
+                </div>
+
+                <div class="form-row">
+                    <label for="message" class="form-label">Tell us about your project</label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        class="form-input form-textarea"
+                        placeholder="Tell us about your project"
+                        required
+                        maxlength="2000"
+                        autocomplete="off"
+                        aria-label="Project Description"
+                        aria-required="true"></textarea>
+                    <span class="form-error" id="message-error"></span>
+                </div>
+
+                <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+
+                <button type="submit" class="form-submit" id="submitBtn">Request Quote</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">J&A <span>PRINTHAUS</span></div>
+            <div class="footer-social">
+                <a href="#">Instagram</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">Pinterest</a>
+            </div>
+            <div class="footer-copyright">&copy; 2024 J&A PrintHaus. All rights reserved.</div>
         </div>
     </footer>
 
+    <!-- Generate CSRF Token -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const fadeElements = document.querySelectorAll('.fade-in');
+        (function() {
+            'use strict';
+            // Generate or retrieve CSRF token
+            function generateCSRFToken() {
+                const existing = document.getElementById('csrf_token').value;
+                if (existing) return existing;
 
-            function checkFade() {
-                fadeElements.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top;
-                    const windowHeight = window.innerHeight;
-
-                    if (elementTop < windowHeight - 100) {
-                        element.classList.add('visible');
-                    }
-                });
+                const token = 'csrf_' + Math.random().toString(36).substr(2, 9);
+                document.getElementById('csrf_token').value = token;
+                sessionStorage.setItem('csrf_token', token);
+                return token;
             }
 
-            window.addEventListener('scroll', checkFade);
-            checkFade();
-        });
+            // Initialize CSRF token on page load
+            document.addEventListener('DOMContentLoaded', generateCSRFToken);
+        })();
     </script>
+
+    <!-- Main Application Script -->
+    <script src="js/main.js" defer></script>
 </body>
 </html>
