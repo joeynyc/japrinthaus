@@ -87,6 +87,13 @@
     const submitBtn = document.getElementById('submitBtn');
     const formStatus = document.getElementById('form-status');
 
+    // Rate limiting configuration
+    const RATE_LIMIT = {
+        MAX_SUBMISSIONS: 5,
+        TIME_WINDOW: 60 * 60 * 1000, // 1 hour in milliseconds
+        STORAGE_KEY: 'form_submissions'
+    };
+
     // Validation rules
     const validationRules = {
         name: {
@@ -111,6 +118,130 @@
             message: 'Project description must be between 10 and 2000 characters'
         }
     };
+
+    // ==================== RATE LIMITING ====================
+
+    // Track countdown interval to prevent memory leaks
+    let rateLimitCountdownInterval = null;
+
+    /**
+     * Get submission timestamps from localStorage
+     */
+    function getSubmissions() {
+        try {
+            const stored = localStorage.getItem(RATE_LIMIT.STORAGE_KEY);
+            if (!stored) return [];
+
+            const parsed = JSON.parse(stored);
+
+            // Validate data is an array of numbers
+            if (!Array.isArray(parsed)) return [];
+            return parsed.filter(item => typeof item === 'number' && !isNaN(item));
+        } catch (e) {
+            console.error('Error reading submissions from localStorage:', e);
+            return [];
+        }
+    }
+
+    /**
+     * Save submission timestamps to localStorage
+     */
+    function saveSubmissions(submissions) {
+        try {
+            localStorage.setItem(RATE_LIMIT.STORAGE_KEY, JSON.stringify(submissions));
+        } catch (e) {
+            console.error('Error saving submissions to localStorage:', e);
+        }
+    }
+
+    /**
+     * Clean up old submissions (older than 1 hour)
+     */
+    function cleanupOldSubmissions(submissions) {
+        const now = Date.now();
+        return submissions.filter(timestamp => now - timestamp < RATE_LIMIT.TIME_WINDOW);
+    }
+
+    /**
+     * Check if rate limit has been exceeded
+     * Returns: { allowed: boolean, remaining: number, resetTime: number|null }
+     */
+    function checkRateLimit() {
+        let submissions = getSubmissions();
+        submissions = cleanupOldSubmissions(submissions);
+        saveSubmissions(submissions);
+
+        const remaining = RATE_LIMIT.MAX_SUBMISSIONS - submissions.length;
+        const allowed = remaining > 0;
+
+        let resetTime = null;
+        if (!allowed && submissions.length > 0) {
+            // Calculate when the oldest submission expires
+            resetTime = submissions[0] + RATE_LIMIT.TIME_WINDOW;
+        }
+
+        return { allowed, remaining, resetTime };
+    }
+
+    /**
+     * Record a new submission
+     */
+    function recordSubmission() {
+        let submissions = getSubmissions();
+        submissions = cleanupOldSubmissions(submissions);
+        submissions.push(Date.now());
+        saveSubmissions(submissions);
+    }
+
+    /**
+     * Format time remaining for countdown
+     */
+    function formatTimeRemaining(milliseconds) {
+        const minutes = Math.floor(milliseconds / 60000);
+        const seconds = Math.floor((milliseconds % 60000) / 1000);
+        return `${minutes}m ${seconds}s`;
+    }
+
+    /**
+     * Show rate limit message with countdown
+     */
+    function showRateLimitMessage(resetTime) {
+        // Clear any existing countdown interval to prevent memory leaks
+        if (rateLimitCountdownInterval) {
+            clearInterval(rateLimitCountdownInterval);
+            rateLimitCountdownInterval = null;
+        }
+
+        const updateCountdown = () => {
+            const now = Date.now();
+            const remaining = resetTime - now;
+
+            if (remaining <= 0) {
+                // Rate limit has expired, clean up and re-enable form
+                checkRateLimit(); // Clean up expired submissions from localStorage
+                formStatus.textContent = '';
+                formStatus.className = 'form-status';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Request Quote';
+                if (rateLimitCountdownInterval) {
+                    clearInterval(rateLimitCountdownInterval);
+                    rateLimitCountdownInterval = null;
+                }
+                return;
+            }
+
+            const timeStr = formatTimeRemaining(remaining);
+            formStatus.textContent = `Rate limit exceeded. You've submitted 5 forms in the last hour. Please try again in ${timeStr}.`;
+            formStatus.className = 'form-status error';
+        };
+
+        updateCountdown();
+        rateLimitCountdownInterval = setInterval(updateCountdown, 1000);
+
+        // Disable submit button
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Limit Reached';
+    }
 
     /**
      * Validate a single form field
@@ -212,8 +343,23 @@
      * Handle form submission
      */
     if (contactForm) {
+        // Check rate limit on page load
+        const initialRateCheck = checkRateLimit();
+        if (!initialRateCheck.allowed && initialRateCheck.resetTime) {
+            showRateLimitMessage(initialRateCheck.resetTime);
+        }
+
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Check rate limit before processing
+            const rateCheck = checkRateLimit();
+            if (!rateCheck.allowed) {
+                if (rateCheck.resetTime) {
+                    showRateLimitMessage(rateCheck.resetTime);
+                }
+                return;
+            }
 
             // Validate form
             if (!validateForm()) {
@@ -253,15 +399,25 @@
 
                 // Success response
                 showStatus('Thank you! We\'ll contact you soon with a quote.', 'success');
+
+                // Record this submission for rate limiting
+                recordSubmission();
+
                 clearForm();
 
             } catch (error) {
                 console.error('Form submission error:', error);
                 showStatus('An error occurred. Please try again or contact us directly at japrinthaus@gmail.com', 'error');
             } finally {
-                // Re-enable submit button
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Request Quote';
+                // Check if rate limit was just hit on successful 5th submission
+                const finalCheck = checkRateLimit();
+                if (!finalCheck.allowed && finalCheck.resetTime) {
+                    showRateLimitMessage(finalCheck.resetTime);
+                } else {
+                    // Re-enable submit button only if not rate-limited
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Request Quote';
+                }
             }
         });
 
