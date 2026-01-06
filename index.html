@@ -1467,8 +1467,7 @@
                     </div>
                 </div>
             </div>
-            <form class="contact-form" id="contactForm" method="POST" action="/api/contact" novalidate>
-                <input type="hidden" name="csrf_token" id="csrf_token" value="">
+            <form class="contact-form" id="contactForm" name="contact" method="POST" netlify novalidate>
 
                 <div class="form-row">
                     <label for="name" class="form-label">Your Name</label>
@@ -1553,26 +1552,6 @@
             <div class="footer-copyright">&copy; 2024 J&A PrintHaus. All rights reserved.</div>
         </div>
     </footer>
-
-    <!-- Generate CSRF Token -->
-    <script>
-        (function() {
-            'use strict';
-            // Generate or retrieve CSRF token
-            function generateCSRFToken() {
-                const existing = document.getElementById('csrf_token').value;
-                if (existing) return existing;
-
-                const token = 'csrf_' + Math.random().toString(36).substr(2, 9);
-                document.getElementById('csrf_token').value = token;
-                sessionStorage.setItem('csrf_token', token);
-                return token;
-            }
-
-            // Initialize CSRF token on page load
-            document.addEventListener('DOMContentLoaded', generateCSRFToken);
-        })();
-    </script>
 
     <!-- Main Application Script -->
     <script src="js/main.js" defer></script>

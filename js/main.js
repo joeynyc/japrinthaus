@@ -349,12 +349,11 @@
             showRateLimitMessage(initialRateCheck.resetTime);
         }
 
-        contactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-
+        contactForm.addEventListener('submit', function(e) {
             // Check rate limit before processing
             const rateCheck = checkRateLimit();
             if (!rateCheck.allowed) {
+                e.preventDefault();
                 if (rateCheck.resetTime) {
                     showRateLimitMessage(rateCheck.resetTime);
                 }
@@ -363,6 +362,7 @@
 
             // Validate form
             if (!validateForm()) {
+                e.preventDefault();
                 showStatus('Please correct the errors above', 'error');
                 return;
             }
@@ -371,54 +371,18 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Sending...';
 
-            try {
-                // Gather form data
-                const formData = {
-                    name: sanitizeInput(document.getElementById('name').value.trim()),
-                    email: sanitizeInput(document.getElementById('email').value.trim()),
-                    project_type: sanitizeInput(document.getElementById('project_type').value.trim()),
-                    message: sanitizeInput(document.getElementById('message').value.trim()),
-                    csrf_token: document.getElementById('csrf_token').value
-                };
+            // Record this submission for rate limiting
+            recordSubmission();
 
-                // Send form data to server
-                const response = await fetch(contactForm.action, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-Token': formData.csrf_token
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
-
-                const result = await response.json();
-
-                // Success response
-                showStatus('Thank you! We\'ll contact you soon with a quote.', 'success');
-
-                // Record this submission for rate limiting
-                recordSubmission();
-
-                clearForm();
-
-            } catch (error) {
-                console.error('Form submission error:', error);
-                showStatus('An error occurred. Please try again or contact us directly at japrinthaus@gmail.com', 'error');
-            } finally {
-                // Check if rate limit was just hit on successful 5th submission
-                const finalCheck = checkRateLimit();
-                if (!finalCheck.allowed && finalCheck.resetTime) {
-                    showRateLimitMessage(finalCheck.resetTime);
-                } else {
-                    // Re-enable submit button only if not rate-limited
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Request Quote';
-                }
+            // Check if rate limit was just hit on 5th submission
+            const finalCheck = checkRateLimit();
+            if (!finalCheck.allowed && finalCheck.resetTime) {
+                // Show rate limit message when form reloads
+                showRateLimitMessage(finalCheck.resetTime);
             }
+
+            // Allow form to submit to Netlify Forms
+            // (do not preventDefault - let the form submit naturally)
         });
 
         // Add real-time validation to form fields
