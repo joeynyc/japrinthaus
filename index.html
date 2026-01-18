@@ -586,14 +586,36 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 2rem;
-            background: linear-gradient(to top, rgba(10, 10, 10, 0.95), transparent);
+            padding: 1.5rem;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.95) 0%,
+                rgba(0, 0, 0, 0.85) 60%,
+                rgba(0, 0, 0, 0) 100%
+            );
             transform: translateY(100%);
-            transition: transform 0.4s ease;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .portfolio-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 1.5rem;
+            width: 40px;
+            height: 3px;
+            background: var(--blue);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease 0.15s;
         }
 
         .portfolio-item:hover .portfolio-overlay {
             transform: translateY(0);
+        }
+
+        .portfolio-item:hover .portfolio-overlay::before {
+            transform: scaleX(1);
         }
 
         .portfolio-item {
@@ -616,18 +638,28 @@
 
         .portfolio-title {
             font-family: 'Oswald', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
+            letter-spacing: 0.08em;
+            color: var(--white);
+            margin-bottom: 0.6rem;
+            margin-top: 0.75rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .portfolio-category {
-            font-size: 0.85rem;
-            color: var(--blue);
-            letter-spacing: 0.2em;
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--white);
+            letter-spacing: 0.15em;
             text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.35rem 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
         }
 
         /* About Section */
@@ -1077,11 +1109,31 @@
             }
 
             .portfolio-grid {
+                grid-template-columns: repeat(2, 1fr);
                 gap: 1.2rem;
             }
 
             .portfolio-item {
                 height: 250px;
+            }
+
+            .portfolio-item.large,
+            .portfolio-item.tall {
+                grid-column: span 2;
+                height: 350px;
+            }
+
+            .portfolio-overlay {
+                padding: 1.75rem;
+            }
+
+            .portfolio-overlay::before {
+                left: 1.75rem;
+                width: 50px;
+            }
+
+            .portfolio-title {
+                font-size: 1.35rem;
             }
 
             .about-grid {
@@ -1182,7 +1234,7 @@
 
             .portfolio-grid {
                 grid-template-columns: repeat(12, 1fr);
-                grid-template-rows: repeat(2, 300px);
+                grid-template-rows: repeat(3, 300px);
                 gap: 1.5rem;
             }
 
@@ -1196,12 +1248,32 @@
             }
 
             .portfolio-item.tall {
-                grid-column: span 4;
+                grid-column: span 6;
                 grid-row: span 2;
             }
 
             .portfolio-item.medium {
-                grid-column: span 4;
+                grid-column: span 3;
+            }
+
+            .portfolio-overlay {
+                padding: 2rem;
+            }
+
+            .portfolio-overlay::before {
+                left: 2rem;
+                width: 60px;
+                height: 4px;
+            }
+
+            .portfolio-title {
+                font-size: 1.5rem;
+                margin-top: 1rem;
+            }
+
+            .portfolio-category {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.9rem;
             }
 
             .about-grid {
@@ -1356,31 +1428,45 @@
         </div>
         <div class="portfolio-grid">
             <div class="portfolio-item large">
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&q=80" alt="Restaurant interior mural">
+                <img src="portfolio-choir-bar.png" alt="Choir Practice Bar interior mural" loading="lazy">
                 <div class="portfolio-overlay">
-                    <h4 class="portfolio-title">Urban Kitchen</h4>
+                    <h4 class="portfolio-title">Choir Practice Bar</h4>
                     <span class="portfolio-category">Hospitality</span>
                 </div>
             </div>
             <div class="portfolio-item tall">
-                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Corporate office wall art">
+                <img src="portfolio-dance-studio.png" alt="Dance studio wall mural" loading="lazy">
                 <div class="portfolio-overlay">
-                    <h4 class="portfolio-title">Tech Hub HQ</h4>
+                    <h4 class="portfolio-title">Dance Studio Mural</h4>
                     <span class="portfolio-category">Commercial</span>
                 </div>
             </div>
             <div class="portfolio-item medium">
-                <img src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=800&q=80" alt="Artistic mural detail">
+                <img src="portfolio-pan-cafe.jpg" alt="Pan & Café restaurant branding" loading="lazy">
                 <div class="portfolio-overlay">
-                    <h4 class="portfolio-title">Art District</h4>
-                    <span class="portfolio-category">Residential</span>
+                    <h4 class="portfolio-title">Pan & Café</h4>
+                    <span class="portfolio-category">Hospitality</span>
                 </div>
             </div>
             <div class="portfolio-item medium">
-                <img src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=800&q=80" alt="Geometric pattern wall">
+                <img src="portfolio-alessandros.jpg" alt="Alessandro's Pizzeria wall design" loading="lazy">
                 <div class="portfolio-overlay">
-                    <h4 class="portfolio-title">Modern Space</h4>
-                    <span class="portfolio-category">Commercial</span>
+                    <h4 class="portfolio-title">Alessandro's Pizzeria</h4>
+                    <span class="portfolio-category">Hospitality</span>
+                </div>
+            </div>
+            <div class="portfolio-item medium">
+                <img src="portfolio-mediterranean.jpg" alt="Mediterranean triptych wall art" loading="lazy">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Mediterranean Triptych</h4>
+                    <span class="portfolio-category">Hospitality</span>
+                </div>
+            </div>
+            <div class="portfolio-item medium">
+                <img src="portfolio-coffee-house.jpg" alt="Coffee house mural installation" loading="lazy">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Coffee House Mural</h4>
+                    <span class="portfolio-category">Hospitality</span>
                 </div>
             </div>
         </div>
