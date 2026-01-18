@@ -964,20 +964,78 @@
 
         .footer-social {
             display: flex;
-            gap: 2rem;
+            align-items: center;
+            gap: 0;
         }
 
-        .footer-social a {
+        /* Dual Instagram Component */
+        .instagram-dual {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(192, 192, 192, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .instagram-dual:hover {
+            background: rgba(35, 35, 255, 0.08);
+            border-color: rgba(35, 35, 255, 0.3);
+        }
+
+        .instagram-icon {
+            width: 22px;
+            height: 22px;
+            color: var(--silver);
+            transition: color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .instagram-dual:hover .instagram-icon {
+            color: var(--blue);
+        }
+
+        .instagram-handles {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .instagram-handles a {
             font-family: 'Oswald', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.7rem;
             color: var(--silver);
             text-decoration: none;
-            letter-spacing: 0.1em;
-            transition: color 0.3s ease;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 0.5rem;
         }
 
-        .footer-social a:hover {
+        .instagram-handles a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 3px;
+            background: var(--silver);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .instagram-handles a:hover {
             color: var(--blue);
+            transform: translateX(3px);
+        }
+
+        .instagram-handles a:hover::before {
+            background: var(--blue);
+            width: 8px;
+            border-radius: 2px;
         }
 
         .footer-copyright {
@@ -1644,7 +1702,17 @@
         <div class="footer-content">
             <div class="footer-logo">J&A <span>PRINTHAUS</span></div>
             <div class="footer-social">
-                <a href="#">Instagram</a>
+                <div class="instagram-dual">
+                    <svg class="instagram-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                    </svg>
+                    <div class="instagram-handles">
+                        <a href="https://instagram.com/jandaprinthaus" target="_blank" rel="noopener noreferrer">@jandaprinthaus</a>
+                        <a href="https://instagram.com/japrinthaus" target="_blank" rel="noopener noreferrer">@japrinthaus</a>
+                    </div>
+                </div>
             </div>
             <div class="footer-copyright">&copy; 2024 J&A PrintHaus. All rights reserved.</div>
         </div>
