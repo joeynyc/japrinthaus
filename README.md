@@ -38,9 +38,7 @@ At J&A Print House, we specialize in **direct-to-wall printing**, offering a uni
 - Artistic Designs and decorative patterns
 
 ### Contact Information
-- Direct contact details for Jaime Maya and Antonio Velazquez
-- Click-to-call phone numbers
-- Email integration for instant communication
+- Direct contact details
 - Call-to-action button
 
 ## 🎨 Design Highlights
@@ -99,9 +97,7 @@ The website is built with a **mobile-first approach**:
 ## 📞 Contact Us
 
 **J&A Printhaus**
-- 📧 Email: [japrinthaus@gmail.com](mailto:japrinthaus@gmail.com)
-- 📱 Jaime Maya: [508-851-0997](tel:5088510997)
-- 📱 Antonio Velazquez: [347-998-4933](tel:3479984933)
+- Visit our website for contact details
 
 ## 📄 License
 
