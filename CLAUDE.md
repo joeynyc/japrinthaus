@@ -273,8 +273,8 @@ See `SECURITY-HEADERS.md` for configuration:
 - **Git Repo**: `joeynyc/japrinthaus` on GitHub
 - **Current Branch**: `main`
 - **Live Site**: https://joeynyc.github.io/japrinthaus/
-- **Company Email**: japrinthaus@gmail.com
-- **Contact**: Jaime Maya (508-851-0997), Antonio Velazquez (347-998-4933)
+- **Company Email**: (see website)
+- **Contact**: (see website)
 
 ---
 

@@ -4,11 +4,6 @@ At J&A Print House, we specialize in direct-to-wall printing, offering a unique 
 
 Contact Information
 Business Name J&A Printhaus
-Email japrinthaus@gmail.com
-
-Phone Numbers 
-Jaime Maya 508-851-0997 
-Antonio Velazquez347-998-4933
 
 
 Services Offered

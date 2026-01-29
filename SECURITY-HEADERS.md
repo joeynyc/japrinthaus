@@ -249,7 +249,7 @@ async function sendEmailNotification(data) {
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: 'japrinthaus@gmail.com',
+        to: process.env.CONTACT_EMAIL,
         subject: `New Contact Form Submission: ${data.project_type}`,
         html: `
             <h2>New Contact Form Submission</h2>
@@ -289,9 +289,7 @@ async function sendConfirmationEmail(userEmail) {
             <h2>Thank You!</h2>
             <p>We've received your quote request and will get back to you within 24 hours.</p>
             <p>You can also reach us at:</p>
-            <p>📧 japrinthaus@gmail.com</p>
-            <p>📱 Jaime Maya: 508-851-0997</p>
-            <p>📱 Antonio Velazquez: 347-998-4933</p>
+            <p>📧 Contact us via our website</p>
             <p>Best regards,<br>J&A PrintHaus Team</p>
         `
     };
@@ -425,7 +423,7 @@ $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 // $stmt->execute([$name, $email, $projectType, $message]);
 
 // Send email
-$to = 'japrinthaus@gmail.com';
+$to = getenv('CONTACT_EMAIL');
 $subject = "New Contact Form Submission: $projectType";
 $emailBody = "Name: $name\nEmail: $email\nProject Type: $projectType\n\nMessage:\n$message";
 
@@ -481,7 +479,4 @@ curl -I https://japrinthaus.com | grep Content-Security-Policy
 
 ## Support
 
-For questions or issues, contact:
-- Email: japrinthaus@gmail.com
-- Jaime Maya: 508-851-0997
-- Antonio Velazquez: 347-998-4933
+For questions or issues, visit the website for contact details.
