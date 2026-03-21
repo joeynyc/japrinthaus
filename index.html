@@ -267,11 +267,30 @@
             z-index: 0;
         }
 
+        .hero-bg video,
         .hero-bg img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.6) contrast(1.1);
+            filter: brightness(0.5) contrast(1.1);
+        }
+
+        /* Mobile: use poster image instead of video to save data/battery */
+        .hero-bg video {
+            display: none;
+        }
+
+        .hero-bg .hero-poster {
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            .hero-bg video {
+                display: block;
+            }
+            .hero-bg .hero-poster {
+                display: none;
+            }
         }
 
         .hero-overlay {
@@ -282,9 +301,9 @@
             height: 100%;
             background: linear-gradient(
                 135deg,
-                rgba(10, 10, 10, 0.8) 0%,
-                rgba(10, 10, 10, 0.4) 50%,
-                rgba(0, 102, 255, 0.15) 100%
+                rgba(10, 10, 10, 0.75) 0%,
+                rgba(10, 10, 10, 0.45) 50%,
+                rgba(0, 102, 255, 0.12) 100%
             );
             z-index: 1;
         }
@@ -1305,7 +1324,7 @@
 
             .portfolio-grid {
                 grid-template-columns: repeat(12, 1fr);
-                grid-template-rows: repeat(3, 300px);
+                grid-template-rows: repeat(4, 280px);
                 gap: 1.5rem;
             }
 
@@ -1441,7 +1460,10 @@
     <!-- Hero Section -->
     <header class="hero">
         <div class="hero-bg">
-            <img src="wall16.png" alt="Restaurant with mural on wall">
+            <video autoplay muted loop playsinline poster="hero-poster.jpg" aria-hidden="true">
+                <source src="hero-video.mp4" type="video/mp4">
+            </video>
+            <img class="hero-poster" src="hero-poster.jpg" alt="Restaurant with direct-to-wall printed classical paintings">
         </div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -1499,37 +1521,51 @@
         </div>
         <div class="portfolio-grid">
             <div class="portfolio-item large">
-                <img src="portfolio-choir-bar.png" alt="Choir Practice Bar interior mural" loading="lazy">
+                <img src="portfolio-nyc-skyline-restaurant.jpg" alt="Restaurant interior with NYC skyline and stadium murals on brick wall" loading="lazy">
                 <div class="portfolio-overlay">
-                    <h4 class="portfolio-title">Choir Practice Bar</h4>
+                    <h4 class="portfolio-title">NYC Skyline Restaurant</h4>
                     <span class="portfolio-category">Hospitality</span>
                 </div>
             </div>
             <div class="portfolio-item tall">
-                <img src="portfolio-dance-studio.png" alt="Dance studio wall mural" loading="lazy">
+                <img src="portfolio-alessandros-trattoria.jpg" alt="Alessandro's Trattoria sepia mural of traditional Italian pizzeria" loading="lazy">
                 <div class="portfolio-overlay">
-                    <h4 class="portfolio-title">Dance Studio Mural</h4>
-                    <span class="portfolio-category">Commercial</span>
+                    <h4 class="portfolio-title">Alessandro's Trattoria</h4>
+                    <span class="portfolio-category">Hospitality</span>
+                </div>
+            </div>
+            <div class="portfolio-item medium">
+                <img src="portfolio-venice-canal.jpg" alt="Venice Grand Canal panoramic wall print" loading="lazy">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Venice Grand Canal</h4>
+                    <span class="portfolio-category">Fine Art</span>
+                </div>
+            </div>
+            <div class="portfolio-item medium">
+                <img src="portfolio-indigenous-mural.jpg" alt="Indigenous ceremonial figure mural being printed on wall" loading="lazy">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Ceremonial Mural</h4>
+                    <span class="portfolio-category">Cultural</span>
+                </div>
+            </div>
+            <div class="portfolio-item medium">
+                <img src="portfolio-portrait-painting.jpg" alt="Artistic female portrait with paint splashes being printed" loading="lazy">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Portrait in Progress</h4>
+                    <span class="portfolio-category">Fine Art</span>
+                </div>
+            </div>
+            <div class="portfolio-item medium">
+                <img src="portfolio-dia-de-muertos.jpg" alt="Día de los Muertos sugar skull portrait wall print" loading="lazy">
+                <div class="portfolio-overlay">
+                    <h4 class="portfolio-title">Día de los Muertos</h4>
+                    <span class="portfolio-category">Cultural</span>
                 </div>
             </div>
             <div class="portfolio-item medium">
                 <img src="portfolio-pan-cafe.jpg" alt="Pan & Café restaurant branding" loading="lazy">
                 <div class="portfolio-overlay">
                     <h4 class="portfolio-title">Pan & Café</h4>
-                    <span class="portfolio-category">Hospitality</span>
-                </div>
-            </div>
-            <div class="portfolio-item medium">
-                <img src="portfolio-alessandros.jpg" alt="Alessandro's Pizzeria wall design" loading="lazy">
-                <div class="portfolio-overlay">
-                    <h4 class="portfolio-title">Alessandro's Pizzeria</h4>
-                    <span class="portfolio-category">Hospitality</span>
-                </div>
-            </div>
-            <div class="portfolio-item medium">
-                <img src="portfolio-mediterranean.jpg" alt="Mediterranean triptych wall art" loading="lazy">
-                <div class="portfolio-overlay">
-                    <h4 class="portfolio-title">Mediterranean Triptych</h4>
                     <span class="portfolio-category">Hospitality</span>
                 </div>
             </div>
