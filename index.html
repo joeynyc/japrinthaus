@@ -82,15 +82,29 @@
         }
 
         .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            line-height: 1;
+        }
+
+        .nav-logo img {
+            height: 36px;
+            width: auto;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .nav-logo-text {
             font-family: 'Oswald', sans-serif;
             font-size: 1.1rem;
             font-weight: 700;
             letter-spacing: 0.2em;
             color: var(--white);
-            text-decoration: none;
         }
 
-        .nav-logo span {
+        .nav-logo-text span {
             color: var(--blue);
         }
 
@@ -1100,7 +1114,11 @@
                 padding: 1.2rem 3rem;
             }
 
-            .nav-logo {
+            .nav-logo img {
+                height: 42px;
+            }
+
+            .nav-logo-text {
                 font-size: 1.3rem;
                 letter-spacing: 0.3em;
             }
@@ -1309,7 +1327,11 @@
                 padding: 1.5rem 4rem;
             }
 
-            .nav-logo {
+            .nav-logo img {
+                height: 48px;
+            }
+
+            .nav-logo-text {
                 font-size: 1.5rem;
                 letter-spacing: 0.3em;
             }
@@ -1448,7 +1470,10 @@
 <body>
     <!-- Navigation -->
     <nav class="nav">
-        <a href="#" class="nav-logo">J&A <span>PRINTHAUS</span></a>
+        <a href="#" class="nav-logo">
+            <img src="logo-badge.png" alt="JA PrintHaus logo" width="48" height="48">
+            <span class="nav-logo-text">J&A <span>PRINTHAUS</span></span>
+        </a>
 
         <!-- Mobile Menu Button -->
         <button class="nav-hamburger" id="navHamburger" aria-label="Toggle navigation menu" aria-expanded="false">
