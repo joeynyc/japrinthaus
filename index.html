@@ -294,22 +294,18 @@
             filter: brightness(0.5) contrast(1.1);
         }
 
-        /* Mobile: use poster image instead of video to save data/battery */
-        .hero-bg video {
+        /* Poster is the fallback if video can't autoplay */
+        .hero-bg .hero-poster {
             display: none;
         }
 
-        .hero-bg .hero-poster {
-            display: block;
+        /* If JS detects video won't play, it adds this class */
+        .hero-bg.no-video video {
+            display: none;
         }
 
-        @media (min-width: 768px) {
-            .hero-bg video {
-                display: block;
-            }
-            .hero-bg .hero-poster {
-                display: none;
-            }
+        .hero-bg.no-video .hero-poster {
+            display: block;
         }
 
         .hero-overlay {
@@ -1772,6 +1768,20 @@
             <div class="footer-copyright">&copy; 2026 J&A PrintHaus. All rights reserved.</div>
         </div>
     </footer>
+
+    <!-- Hero video fallback: if autoplay fails, show poster -->
+    <script>
+    (function() {
+        var v = document.querySelector('.hero-bg video');
+        if (!v) return;
+        var p = v.play();
+        if (p !== undefined) {
+            p.catch(function() {
+                v.parentElement.classList.add('no-video');
+            });
+        }
+    })();
+    </script>
 
     <!-- Main Application Script -->
     <script src="js/main.js" defer></script>
